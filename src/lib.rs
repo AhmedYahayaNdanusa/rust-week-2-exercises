@@ -2,8 +2,9 @@ use hex::{decode, encode};
 
 pub fn decode_hex(hex_str: &str) -> Result<Vec<u8>, String> {
     // TODO: Decode hex string into Vec<u8>, return error string on failure
-    let transaction_bytes = hex::decode(hex_str)
-                    .map_err(|e| format!("invalid hex: {}", e))?;
+    let transaction_bytes =
+        hex::decode(hex_str).map_err(|e| format!("invalid hex: {}", e))?;
+
     Ok(transaction_bytes)
 }
 
@@ -29,8 +30,9 @@ pub fn swap_endian_u32(num: u32) -> [u8; 4] {
 
 pub fn parse_satoshis(input: &str) -> Result<u64, String> {
     // TODO: Parse input string to u64, return error string if invalid
-    input.parse::<u64>()
-        .map_err(|e| format!("invalid satoshi amount".to_string))
+    input
+        .parse::<u64>()
+        .map_err(|_| "invalid satoshi amount".to_string())
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -43,11 +45,9 @@ pub enum ScriptType {
 pub fn classify_script(script: &[u8]) -> ScriptType {
     // TODO: Match script pattern and return corresponding ScriptType
     match script {
-        [0x76, 0xa9, 0x14,.., 0x88, 0xac] if script.len() == 25 =>
-        ScriptType::P2PKH,
-                [0x00, 0x14, ..] if script.len() == 22 =>
-                ScriptType::P2WPKH,
-                _ => ScriptType::Unknown,
+    [0x76, 0xa9, 0x14, .., 0x88, 0xac] if script.len() == 25 => ScriptType::P2PKH,
+    [0x00, 0x14, ..] if script.len() == 22 => ScriptType::P2WPKH,
+    _ => ScriptType::Unknown,
     }
 }
 
@@ -96,10 +96,9 @@ impl Opcode {
     pub fn from_byte(byte: u8) -> Result<Self, String> {
         // TODO: Implement mapping from byte to Opcode variant
         match byte {
-            0xac =>
-Ok(Opcode::OpChecksig),
-            0x76 => Ok(Opcode::OpDup),
-            _ => Err(format!("Invalid opcode: 0x{:02x}", byte))
+    0xac => Ok(Opcode::OpChecksig),
+    0x76 => Ok(Opcode::OpDup),
+    _ => Err(format!("Invalid opcode: 0x{:02x}", byte)),
     }
 }
 }
